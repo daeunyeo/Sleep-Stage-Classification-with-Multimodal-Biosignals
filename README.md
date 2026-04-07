@@ -99,6 +99,8 @@ This aligns with a practical argument: respiratory sensors (chest belt, nasal ca
 
 The performance drop from Random Split (Acc 0.847) to LOSO (Acc 0.716) directly reflects the **inter-subject variability** inherent in biosignals. Rather than optimizing for inflated in-sample metrics, this project explicitly evaluated generalization to unseen subjects — a critical requirement for real-world wearable deployment.
 
+This gap is not a failure. It is a deliberate design choice: reporting LOSO alongside random split demonstrates awareness of the difference between benchmark performance and real-world applicability — a distinction that most single-dataset ML projects overlook.
+
 ### SHAP: Channel-level Attribution
 
 | Sleep Stage | Top Contributing Channel | Key Feature |
