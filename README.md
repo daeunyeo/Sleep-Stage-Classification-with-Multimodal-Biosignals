@@ -39,7 +39,7 @@ RF was selected based on this empirical comparison. Gradient boosting models (XG
 Signal quality verification revealed DC drift artifacts with no discernible high-frequency muscle activity in the Sleep-EDF Cassette EMG channel (confirmed via highpass filtering at 10–20 Hz). This is consistent with known limitations of the cassette recorder setup. Additionally, chin EMG electrode placement is physically incompatible with lightweight frontal wearable form factors.
 
 **EEG Pz-Oz — included as independent channel**
-Pearson correlation between EEG Fpz-Cz and EEG Pz-Oz: **r = -0.386** (computed across 303 epochs, 7 subjects). The negative correlation confirms that the two channels carry complementary, independent information — Fpz-Cz reflects frontal activity while Pz-Oz captures occipital dynamics — rather than redundant signals.
+EEG Fpz-Cz and Pz-Oz capture activity from anatomically distinct regions — frontal and occipital cortex respectively — making them physiologically complementary rather than redundant. This was confirmed empirically: Pearson correlation computed across 2 subjects (303 epochs) yielded **r = -0.386**, consistent with the expected independence.
 
 ---
 
@@ -49,7 +49,7 @@ Pearson correlation between EEG Fpz-Cz and EEG Pz-Oz: **r = -0.386** (computed a
 
 | Channel | Features | Physiological Rationale |
 |---------|----------|------------------------|
-| EEG Fpz-Cz | delta / theta / alpha / sigma / beta band power (Welch PSD) | delta→N3, sigma(sleep spindle)→N2, alpha→W |
+| EEG Fpz-Cz | delta(0.5–4Hz) / theta(4–8Hz) / alpha(8–12Hz) / sigma(12–15Hz) / beta(15–30Hz) band power (Welch PSD) | delta→N3, sigma(sleep spindle)→N2, alpha→W |
 | EEG Pz-Oz | Same 5 bands | Independent occipital complement (r = -0.386) |
 | EOG | RMS, ZCR, diff_var | Captures REM rapid eye movement intensity, frequency, and velocity |
 | Resp | Breath rate, std | Reflects sleep-depth-dependent regularity changes |
@@ -117,6 +117,8 @@ EOG contribution to REM prediction: **4× higher than Resp** across all test epo
 ## 5. Lightweight Wearable Feasibility
 
 EEG Fpz-Cz + EOG achieves equivalent performance to a 4-channel setup at 1.5% accuracy cost. This 2-channel configuration is physically realizable in compact wearable form factors:
+
+The algorithm was initially framed around a sleep eye mask form factor. However, the same 2-channel (EEG Fpz-Cz + EOG) configuration is equally realizable in a forehead patch or other compact wearables, as the feature design is channel-combination-based rather than form-factor-specific.
 
 | Form Factor | Advantages | Limitations |
 |------------|------------|-------------|
