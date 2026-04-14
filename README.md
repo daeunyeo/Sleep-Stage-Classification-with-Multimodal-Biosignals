@@ -5,7 +5,7 @@
 
 ## 1. Background & Motivation
 
-Polysomnography (PSG), the clinical gold standard for sleep staging, requires attachment of 10+ electrodes across the body — causing patient discomfort, limiting use to hospital settings, and driving high costs. Reducing the number of channels directly translates to:
+Polysomnography (PSG), the clinical gold standard for sleep staging, requires attachment of 10+ electrodes across the body. This causes patient discomfort, limits use to hospital settings, and drives high costs. Reducing the number of channels directly translates to:
 - Reduced patient discomfort during overnight recording
 - Simplified device hardware and lower manufacturing cost
 - Potential for accessible, consumer-grade sleep monitoring
@@ -22,7 +22,7 @@ Prior to this project, a baseline experiment (`baseline/`) was conducted on Slee
 | SVM   | 64.93% |
 | **RF** | **67.91%** |
 
-RF was selected based on this empirical comparison. Gradient boosting models (XGBoost, LightGBM) were excluded in favor of RF due to its superior compatibility with SHAP TreeExplainer for multi-class feature attribution — the primary analytical goal of this project.
+RF was selected based on this empirical comparison. Gradient boosting models (XGBoost, LightGBM) were excluded in favor of RF due to its superior compatibility with SHAP TreeExplainer for multi-class feature attribution, which is the primary analytical goal of this project.
 
 ---
 
@@ -39,7 +39,7 @@ RF was selected based on this empirical comparison. Gradient boosting models (XG
 Signal quality verification revealed DC drift artifacts with no discernible high-frequency muscle activity in the Sleep-EDF Cassette EMG channel (confirmed via highpass filtering at 10–20 Hz). This is consistent with known limitations of the cassette recorder setup. Additionally, chin EMG electrode placement is physically incompatible with lightweight frontal wearable form factors.
 
 **EEG Pz-Oz — included as independent channel**
-EEG Fpz-Cz and Pz-Oz capture activity from anatomically distinct regions — frontal and occipital cortex respectively — making them physiologically complementary rather than redundant. This was confirmed empirically: Pearson correlation computed across 2 subjects (303 epochs) yielded **r = -0.386**, consistent with the expected independence.
+EEG Fpz-Cz and Pz-Oz capture activity from anatomically distinct regions, specifically the frontal and occipital cortex, making them physiologically complementary rather than redundant. This was confirmed empirically: Pearson correlation computed across 2 subjects (303 epochs) yielded **r = -0.386**, consistent with the expected independence.
 
 ---
 
@@ -58,10 +58,10 @@ EEG Fpz-Cz and Pz-Oz capture activity from anatomically distinct regions — fro
 Beta (13–30 Hz) originally subsumed the sleep spindle range. Isolating sigma (12–15 Hz) as an independent feature directly targets N2-specific oscillations, reducing REM→N2 misclassification.
 
 **EOG diff_var:**
-First-order derivative variance captures the acceleration of eye movements — distinguishing REM (rapid, jerky) from N1 (slow rolling). This reduced REM→N1 misclassification.
+First-order derivative variance captures the acceleration of eye movements, distinguishing REM (rapid, jerky) from N1 (slow rolling). This reduced REM→N1 misclassification.
 
 **Lagged Features (t-1, t, t+1):**
-RF treats each epoch independently, ignoring temporal context. Concatenating features from the preceding and following epochs provides sequential sleep context — reflecting the physiological continuity of sleep stage transitions. Features expanded from 15 → 45 per epoch.
+RF treats each epoch independently, ignoring temporal context. Concatenating features from the preceding and following epochs provides sequential sleep context, reflecting the physiological continuity of sleep stage transitions. Features expanded from 15 to 45 per epoch.
 
 ### Resp Channel — Excluded from Final Model
 
@@ -97,13 +97,13 @@ This aligns with a practical argument: respiratory sensors (chest belt, nasal ca
 
 <img width="1490" height="495" alt="18  ablation eng" src="https://github.com/user-attachments/assets/ff44267b-d7c3-45d2-b1e8-6647da3b3a55" />
 
-**EEG + EOG outperforms the full 4-channel model on REM F1 even under LOSO**, confirming that EOG contributes generalizable cross-subject REM detection — not just within-subject pattern memorization.
+**EEG + EOG outperforms the full 4-channel model on REM F1 even under LOSO**, confirming that EOG captures REM-relevant signal structure that holds across unseen subjects.
 
 ### The Gap between Random Split and LOSO
 
-The performance drop from Random Split (Acc 0.847) to LOSO (Acc 0.716) directly reflects the **inter-subject variability** inherent in biosignals. Rather than optimizing for inflated in-sample metrics, this project explicitly evaluated generalization to unseen subjects — a critical requirement for real-world wearable deployment.
+The performance drop from Random Split (Acc 0.847) to LOSO (Acc 0.716) directly reflects the **inter-subject variability** inherent in biosignals. Rather than optimizing for inflated in-sample metrics, this project explicitly evaluated generalization to unseen subjects, which is a critical requirement for real-world wearable deployment.
 
-This gap is not a failure. It is a deliberate design choice: reporting LOSO alongside random split demonstrates awareness of the difference between benchmark performance and real-world applicability — a distinction that most single-dataset ML projects overlook.
+This gap is not a failure. It is a deliberate design choice: reporting LOSO alongside random split demonstrates awareness of the difference between benchmark performance and real-world applicability, a distinction that most single-dataset ML projects overlook.
 
 ### SHAP: Channel-level Attribution
 
@@ -140,7 +140,7 @@ EEG Fpz-Cz + EOG achieves equivalent performance to a 4-channel setup at 1.5% ac
 
 ## 6. Limitations & Future Work
 
-- **LOSO REM F1 = 0.34:** Root cause — 7-subject dataset and known EOG channel cross-talk in Sleep-EDF Cassette (cassette recorder setup). Seven feature engineering interventions (Baseline Calibration, ratio features, log transform, Peak Count, EOG frequency decomposition, TEO, Hjorth parameters) were systematically tested; none improved LOSO REM F1 beyond baseline, confirming dataset-level constraints rather than feature-level deficiency.
+- **LOSO REM F1 = 0.34:** Root cause is the 7-subject dataset and known EOG channel cross-talk in Sleep-EDF Cassette (cassette recorder setup). Seven feature engineering interventions (Baseline Calibration, ratio features, log transform, Peak Count, EOG frequency decomposition, TEO, Hjorth parameters) were systematically tested; none improved LOSO REM F1 beyond baseline, confirming dataset-level constraints rather than feature-level deficiency.
 - **Scale:** LOSO stabilization expected with ≥20 subjects. Cross-dataset validation (HMC, ISRUC) is a planned extension.
 - **Deep learning:** 1D-CNN / AttnSleep expected to push LOSO REM F1 above 0.5 via end-to-end temporal feature learning.
 - **Personalization:** Rolling Window Normalization for real-time subject adaptation without calibration sessions.
