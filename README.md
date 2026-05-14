@@ -35,10 +35,10 @@ RF was selected based on this empirical comparison. Gradient boosting models (XG
 
 ### Channel Selection & Verification
 
-**EMG (submental chin) — excluded**
+**EMG (submental chin) : excluded**
 Signal quality verification revealed DC drift artifacts with no discernible high-frequency muscle activity in the Sleep-EDF Cassette EMG channel (confirmed via highpass filtering at 10–20 Hz). This is consistent with known limitations of the cassette recorder setup. Additionally, chin EMG electrode placement is physically incompatible with lightweight frontal wearable form factors.
 
-**EEG Pz-Oz — included as independent channel**
+**EEG Pz-Oz : included as independent channel**
 EEG Fpz-Cz and Pz-Oz capture activity from anatomically distinct regions, specifically the frontal and occipital cortex, making them physiologically complementary rather than redundant. This was confirmed empirically: Pearson correlation computed across 2 subjects (303 epochs) yielded **r = -0.386**, consistent with the expected independence.
 
 ---
@@ -63,7 +63,7 @@ First-order derivative variance captures the acceleration of eye movements, dist
 **Lagged Features (t-1, t, t+1):**
 RF treats each epoch independently, ignoring temporal context. Concatenating features from the preceding and following epochs provides sequential sleep context, reflecting the physiological continuity of sleep stage transitions. Features expanded from 15 to 45 per epoch.
 
-### Resp Channel — Excluded from Final Model
+### Resp Channel : Excluded from Final Model
 
 SHAP analysis revealed Resp channel contribution was lowest across all sleep stages (avg. ~0.001–0.002, approximately 1/10 of EEG contribution).
 
