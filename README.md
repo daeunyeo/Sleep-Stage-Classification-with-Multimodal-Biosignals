@@ -1,5 +1,5 @@
 # Sleep Stage Classification with Multimodal Biosignals
-### Minimum-Channel Wearable Feasibility via SHAP based Channel Attribution
+### Minimum Channel Wearable Feasibility via SHAP based Channel Attribution
 
 ---
 
