@@ -1,5 +1,5 @@
 # Sleep Stage Classification with Multimodal Biosignals
-### Minimum-Channel Wearable Feasibility via SHAP-based Channel Attribution
+### Minimum-Channel Wearable Feasibility via SHAP based Channel Attribution
 
 ---
 
@@ -22,7 +22,7 @@ Prior to this project, a baseline experiment (`baseline/`) was conducted on Slee
 | SVM   | 64.93% |
 | **RF** | **67.91%** |
 
-RF was selected based on this empirical comparison. Gradient boosting models (XGBoost, LightGBM) were excluded in favor of RF due to its superior compatibility with SHAP TreeExplainer for multi-class feature attribution, which is the primary analytical goal of this project.
+RF was selected based on this empirical comparison. Gradient boosting models (XGBoost, LightGBM) were excluded in favor of RF due to its superior compatibility with SHAP TreeExplainer for multiclass feature attribution, which is the primary analytical goal of this project.
 
 ---
 
@@ -36,7 +36,7 @@ RF was selected based on this empirical comparison. Gradient boosting models (XG
 ### Channel Selection & Verification
 
 **EMG (submental chin) : excluded**
-Signal quality verification revealed DC drift artifacts with no discernible high-frequency muscle activity in the Sleep-EDF Cassette EMG channel (confirmed via highpass filtering at 10–20 Hz). This is consistent with known limitations of the cassette recorder setup. Additionally, chin EMG electrode placement is physically incompatible with lightweight frontal wearable form factors.
+Signal quality verification revealed DC drift artifacts with no discernible high frequency muscle activity in the Sleep-EDF Cassette EMG channel (confirmed via highpass filtering at 10–20 Hz). This is consistent with known limitations of the cassette recorder setup. Additionally, chin EMG electrode placement is physically incompatible with lightweight frontal wearable form factors.
 
 **EEG Pz-Oz : included as independent channel**
 EEG Fpz-Cz and Pz-Oz capture activity from anatomically distinct regions, specifically the frontal and occipital cortex, making them physiologically complementary rather than redundant. This was confirmed empirically: Pearson correlation computed across 2 subjects (303 epochs) yielded **r = -0.386**, consistent with the expected independence.
@@ -45,20 +45,20 @@ EEG Fpz-Cz and Pz-Oz capture activity from anatomically distinct regions, specif
 
 ## 3. Feature Engineering
 
-### Channel-wise Feature Extraction
+### Channel wise Feature Extraction
 
 | Channel | Features | Physiological Rationale |
 |---------|----------|------------------------|
 | EEG Fpz-Cz | delta(0.5–4Hz) / theta(4–8Hz) / alpha(8–12Hz) / sigma(12–15Hz) / beta(15–30Hz) band power (Welch PSD) | delta→N3, sigma(sleep spindle)→N2, alpha→W |
 | EEG Pz-Oz | Same 5 bands | Independent occipital complement (r = -0.386) |
 | EOG | RMS, ZCR, diff_var | Captures REM rapid eye movement intensity, frequency, and velocity |
-| Resp | Breath rate, std | Reflects sleep-depth-dependent regularity changes |
+| Resp | Breath rate, std | Reflects sleep depth dependent regularity changes |
 
 **Why sigma band was added separately:**
 Beta (13–30 Hz) originally subsumed the sleep spindle range. Isolating sigma (12–15 Hz) as an independent feature directly targets N2-specific oscillations, reducing REM→N2 misclassification.
 
 **EOG diff_var:**
-First-order derivative variance captures the acceleration of eye movements, distinguishing REM (rapid, jerky) from N1 (slow rolling). This reduced REM→N1 misclassification.
+First order derivative variance captures the acceleration of eye movements, distinguishing REM (rapid, jerky) from N1 (slow rolling). This reduced REM→N1 misclassification.
 
 **Lagged Features (t-1, t, t+1):**
 RF treats each epoch independently, ignoring temporal context. Concatenating features from the preceding and following epochs provides sequential sleep context, reflecting the physiological continuity of sleep stage transitions. Features expanded from 15 to 45 per epoch.
@@ -87,7 +87,7 @@ This aligns with a practical argument: respiratory sensors (chest belt, nasal ca
 
 **EEG + EOG achieves accuracy within 1.5% of the 4-channel full model**, with the highest REM F1 among all reduced configurations.
 
-### LOSO: Subject-Independent Validation (7 subjects)
+### LOSO: Subject Independent Validation (7 subjects)
 
 | Configuration | Acc (mean ± std) | REM F1 |
 |--------------|-----------------|--------|
@@ -101,9 +101,9 @@ This aligns with a practical argument: respiratory sensors (chest belt, nasal ca
 
 ### The Gap between Random Split and LOSO
 
-The performance drop from Random Split (Acc 0.847) to LOSO (Acc 0.716) directly reflects the **inter-subject variability** inherent in biosignals. Rather than optimizing for inflated in-sample metrics, this project explicitly evaluated generalization to unseen subjects, which is a critical requirement for real-world wearable deployment.
+The performance drop from Random Split (Acc 0.847) to LOSO (Acc 0.716) directly reflects the **inter subject variability** inherent in biosignals. Rather than optimizing for inflated in-sample metrics, this project explicitly evaluated generalization to unseen subjects, which is a critical requirement for real world wearable deployment.
 
-This gap is not a failure. It is a deliberate design choice: reporting LOSO alongside random split demonstrates awareness of the difference between benchmark performance and real-world applicability, a distinction that most single-dataset ML projects overlook.
+This gap is not a failure. It is a deliberate design choice: reporting LOSO alongside random split demonstrates awareness of the difference between benchmark performance and real world applicability, a distinction that most single dataset ML projects overlook.
 
 ### SHAP: Channel-level Attribution
 
@@ -119,13 +119,13 @@ This gap is not a failure. It is a deliberate design choice: reporting LOSO alon
 
 <img width="1389" height="593" alt="18  rem shap eng" src="https://github.com/user-attachments/assets/98a3bf3f-98f5-4827-833f-c9df24be2ac9" />
 
-EOG contribution to REM prediction: **4× higher than Resp** across all test epochs. Resp ranked last in every sleep stage — quantitatively supporting its exclusion.
+EOG contribution to REM prediction: **4× higher than Resp** across all test epochs. Resp ranked last in every sleep stage, quantitatively supporting its exclusion.
 
 ---
 
 ## 5. Lightweight Wearable Feasibility
 
-The algorithm was initially framed around a sleep eye mask form factor. However, the same 2-channel (EEG Fpz-Cz + EOG) configuration is equally realizable in a forehead patch or other compact wearables, as the feature design is channel-combination-based rather than form-factor-specific.
+The algorithm was initially framed around a sleep eye mask form factor. However, the same 2-channel (EEG Fpz-Cz + EOG) configuration is equally realizable in a forehead patch or other compact wearables, as the feature design is channel combination based rather than form factor specific.
 
 EEG Fpz-Cz + EOG achieves equivalent performance to a 4-channel setup at 1.5% accuracy cost. This 2-channel configuration is physically realizable in compact wearable form factors:
 
